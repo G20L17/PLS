@@ -13,14 +13,12 @@ from skmultilearn.adapt import MLkNN
 RANDOM_SEED = 193
 Nsample=100000
 #snr=[0, 1, 2, 5, 10, 20, 50, 100, 200, 500]
-snr=[50]
-train_num=1000
-k_num=[5,7,9,11]
+snr=[0,5,10,50]
+train_num=80000
 
 print("%s", str(datetime.now()))
-for Nk in k_num:
-    Nsnr=50
-#for Nsnr in snr:
+
+for Nsnr in snr:
     print('Nsnr = '+str(Nsnr))
     path = '/home/machinelearningstation/PycharmProjects/multiclassification'
     df0 = pd.read_csv(path + '/data/spec_C2H6_all_9_pxl_1000_samples_' + str(Nsample) + '_SNR_'
@@ -36,7 +34,7 @@ for Nk in k_num:
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=RANDOM_SEED)
     X_train = X_train[0:train_num]
     Y_train = Y_train[0:train_num]
-    classifier=MLkNN(k=Nk)
+    classifier=MLkNN(k=19)
     classifier.fit(X_train, Y_train)
     y_predict=classifier.predict(X_test)
     y_true = Y_test
