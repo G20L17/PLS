@@ -10,21 +10,23 @@ import sklearn.metrics as sklm
 from datetime import datetime
 
 
-
 print("%s", str(datetime.now()))
 RANDOM_SEED = 193
 Nsample=100000
-Nsnr=100
+Nsnr=50
+train_size=2500
 path='/home/machinelearningstation/PycharmProjects/multiclassification'
 df=pd.read_csv(path+'/data/spec_C2H6_all_9_pxl_1000_samples_'+str(Nsample)+'_SNR_'
                +str(Nsnr)+'_dB.csv')
-
+df=df.sample(frac=1)
 target = (df[df.columns[-9:]].apply(lambda x: x!=0)). astype(int)
 data=df.drop(df.columns[-9:],axis=1)
 X=scale(pd.DataFrame.as_matrix(data))
 Y=pd.DataFrame.as_matrix(target)
 
 X_train, X_test , Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=RANDOM_SEED)
+X_train=X_train[0:train_size]
+Y_train=Y_train[0:train_size]
 Mtrain, Ntrain=Y_train.shape
 Mtest, Ntest=Y_test.shape
 y_predict=np.zeros((Mtest, Ntest))

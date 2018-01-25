@@ -38,9 +38,11 @@ def Threshold(y_true, score):
     thresh=np.zeros(nt)
     f1t=0
     for i in range(nt): #range(nt):
-        t_candidate=np.array([0,1])
-        t_candidate=np.append(t_candidate, score[i,:])
-        for j in range(lt+2):
+        #t_candidate=np.array([0,1])
+        #t_candidate=np.append(t_candidate, score[i,:])
+        t_candidate=score[i, :]
+        #for j in range(lt+2):
+        for j in range(lt):
             f1t_j=sklm.f1_score(y_true[i, :], Predict(score[i,:], t_candidate[j]), average='micro')
             if f1t_j>f1t:
                 f1t=f1t_j
@@ -58,7 +60,8 @@ def Predict(xscore, threshold):
 
 Nsample=100000
 #snr=[0, 1, 2, 5, 10, 20, 50, 100, 200, 500]
-snr=[20,30]
+snr=[50]
+train_num=2000
 
 print("%s", str(datetime.now()))
 for Nsnr in snr:
@@ -77,6 +80,8 @@ for Nsnr in snr:
     all_Y=pd.DataFrame.as_matrix(target)
     train_size=0.8
     train_X, test_X, train_Y, test_Y = train_test_split(all_X, all_Y, test_size=1-train_size, random_state=RANDOM_SEED)
+    train_X = train_X[0:train_num]
+    train_Y = train_Y[0:train_num]
 
     x_size=train_X.shape[1]
     h_size=3000
@@ -119,8 +124,8 @@ for Nsnr in snr:
             sess.run(updates_s,feed_dict={X:train_X[10000*i:(i+1)*10000],Y:train_Y[10000*i:(i+1)*10000]})
 
         J1s=sess.run(cost_s, feed_dict={X:train_X[0:10000],Y:train_Y[0:10000]})
-        epoch += 1
         print('score epoch= '+str(epoch)+', loss='+str(J1s))
+        epoch+=1
 
     indx = 0
     batch_size=10000
